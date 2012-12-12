@@ -1,0 +1,7 @@
+Per installare il tema Cesena spostare il file sty in
+
+/usr/share/texmf-dist/tex/latex/beamer/themes/theme/
+
+e lanciare il comando
+
+texhash
