@@ -11,9 +11,7 @@ bits 64
 
 	mov rax, 59
 	syscall
-	jmp exit
 
 filename db '/bin/bash',0
 args times 2 dq 1
 
-exit:
