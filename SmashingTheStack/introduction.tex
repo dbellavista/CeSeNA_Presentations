@@ -7,9 +7,8 @@ A special thanks to {\bf CeSeNA Security} group and \emph{Marco Ramilli} our ``o
 
 \subsection{Smash the stack}
 \begin{frame}[fragile, allowframebreaks]{Smash the stack}
-\begin{block}{}
-\emph{smash the stack} [C programming] n.\\
-On many C implementations it is possible to corrupt the execution stack by writing past the end of an array declared auto in a routine.  Code that does this is said to smash the stack, and can cause return from the routine to jump to a random address. This can produce some of the most insidious data-dependent bugs known to mankind.
+\begin{block}{\emph{Smash The Stack} [C programming] n.}
+On many C implementations it is possible to corrupt the execution stack by writing past the end of an array declared auto in a routine. Code that does this is said to smash the stack, and can cause return from the routine to jump to a random address. This can produce some of the most insidious data-dependent bugs known to mankind.
 \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -35,7 +34,7 @@ The idea of using buffer overflow to inject code into a program and cause it to 
 \begin{block}{How to Write Buffer Overflow 20/10/1995}
 \emph{by Peiter Zatko (mudge)}\\
 ``\ldots \\
-    The 'Segmentation fault (core dumped)' is what we wanted to see. This
+    The '{\bf Segmentation fault (core dumped)}' is what we wanted to see. This
     tells us there is definitely an attempt to access some memory address
     that we shouldn't. If you do much in 'C' with pointers on a unix
     machine you have probably seen this (or Bus error) when pointing or
@@ -139,14 +138,17 @@ A stack frame contains:
 
 \framebreak
 
-%TODO: add stack-frame picture
-TODO: Stack Frame Pitcure here
+	\begin{figure}
+        \includegraphics[width=0.4\textwidth]{imgs/stackframe.png}
+        \label{fig:stackframe}
+        \caption{Stack frame (ia32 - AT\&T notation)}
+    \end{figure}	
 
 \framebreak
 
 \begin{block}{Call Prologue and Epilogue}
 \begin{columns}[c] 
-    \column{.6\textwidth} 
+    \column{.5\textwidth} 
     \acode
     \tiny
 \begin{lstlisting}
@@ -156,7 +158,7 @@ push EBP
 mov EBP,ESP
 sub ESP,<param-space>
 \end{lstlisting}
-    \column{.4\textwidth}
+    \column{.5\textwidth}
      \acode
      \tiny
 \begin{lstlisting}
