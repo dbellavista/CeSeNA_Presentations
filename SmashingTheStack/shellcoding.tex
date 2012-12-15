@@ -1,17 +1,35 @@
 \section{Shellcoding}
-\begin{frame}{Shellcoding}
+\begin{frame}[fragile]{Shellcoding}
 	\begin{block}{BOF payload}
 		\begin{itemize}
 			\item A buffer overflow exploitation ends with the execution of an arbitrary payload.
 			\item The payload is a sequence of machine code instructions.
-			\item Usually, the ultimate goal is to spawn a shell (hence \emph{shellcoding}).
 			\item A common way to write shellcode is to use assembly language.
+			\item Usually, the ultimate goal is to spawn a shell (hence \emph{shellcoding}):
 		\end{itemize}
 	\end{block}
+	\ccode
+	\begin{lstlisting}
+		execve("/bin/bash", ["/bin/bash", NULL], NULL);
+	\end{lstlisting}
+\end{frame}
 
+\begin{frame}[fragile]{Shellcoding: Creation steps}
+	\ccode
+	\begin{lstlisting}
+		execve("/bin/bash", ["/bin/bash", NULL], NULL);
+	\end{lstlisting}
+	\begin{block}{Knowledge required:}
+		\begin{enumerate}
+			\item Invoking a syscall.
+			\item Refer the string \emph{``/bin/bash''} and the argument array.
+			\item Optimize the payload.
+		\end{enumerate}
+	\end{block}
 \end{frame}
 
 \begin{frame}[fragile]{Shellcoding: Syscalls}
+	\subsection{Syscalls}
 	\begin{block}{Invoking a syscall}
 		\begin{itemize}
 			\item Syscalls are invokable using a numerical id.
@@ -42,84 +60,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Shellcoding: Syscall and parameter passing}
-	\begin{block}{How to pass parameters?}
-		Use the calling convention for syscalls!
-		\begin{description}
-			\item[x86\_64]rdi, rsi, rdx, r10, r8 and r9.
-			\item[x86]ebx, ecx, edx, esi, edi and ebp.
-		\end{description}
-		Other parameters go into the stack.
-	\end{block}
-\end{frame}
-
-\begin{frame}[fragile,allowframebreaks]{Shellcoding: Data reference}
-	\begin{block}{The reference problem}
-		\begin{itemize}
-			\item Usually, a syscall requires parameters such as strings or data structure.
-			\item The shellcode is not compiled with the program it's intended to run: it must be designed as a \emph{Position Independent Code}, i.e. the shellcode can't use absolute reference.
-			\item Therefore you must use relative addressing, but before IA-64 it was not possible.
-		\end{itemize}
-	\end{block}
-	\acode
-	\begin{lstlisting}
-		message db 'CeSeNA',0x0a,0
-		; What will be the address of message?
-		mov rax, ?
-	\end{lstlisting}
-
-	\framebreak
-
-	\begin{block}{Old IA-32 way}
-		\begin{itemize}
-			\item You use a trick: jmp just before the data location, then do a
-				call.
-			\item The call Instruction pushes the next instruction pointer onto the stack, which is equal to the \emph{msg} address.
-		\end{itemize}
-	\end{block}
-	\acode
-	\begin{lstlisting}
-		jmp message
-		run:
-		  pop ebx ; now ebx contains the string reference
-		  ; ... shellcode
-		message:
-		  call run
-		  msg db 'CeSeNA',0x0a,0
-	\end{lstlisting}
-	\begin{block}{New IA-64 way}
-		\begin{itemize}
-			\item IA-64 introduces the RIP relative addressing.
-			\item \emph{[rel message]} becomes \emph{[rip + offset]}
-		\end{itemize}
-	\end{block}
-	\acode
-	\begin{lstlisting}
-		lea rdi, [rel message] ; now ebx contains
-		                       ; the string reference
-		; ... shellcode
-
-		message	db 'CeSeNA',0x0a,0
-	\end{lstlisting}
-	\begin{block}{Generic Way}
-		\begin{itemize}
-			\item You can pop the string in hex format over the stack.
-			\item The stack pointer is then the string reference.
-		\end{itemize}
-	\end{block}
-	\acode
-	\begin{lstlisting}
-		push 0x000a414e ; 0x00, 0x0a, 'AN'
-		push 0x65536543 ; 'eSeC'
-		mov ebx, esp ; now ebx contains the string reference
-		; ...
-	\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{Shellcoding: How to write a shellcode}
-	\begin{itemize}
-		\item A shellcode spawns a shell $\implies$ \emph{execve} syscall.
-	\end{itemize}
+\begin{frame}[fragile,shrink]{Shellcoding: The execve syscall}
 	\ccode
 	\begin{lstlisting}
 		unistd_32.h
@@ -131,12 +72,100 @@
 		                   const char *const argv[],
 		                   const char *const envp[]);
 	\end{lstlisting}
-	\begin{itemize}
-		\item Desired call:
-	\end{itemize}
-	\ccode
+	\begin{block}{man 2 execve}
+		\begin{itemize}
+			\item execve() executes  the  program  pointed to by filename.
+			\item argv is an array of argument strings passed to the new program. By
+				convention, the first of these  strings  should contain the filename.
+			\item envp is an array of strings, conventionally of the form \emph{key=value}.
+			\item Both argv and envp \textbf{must} be terminated by a NULL pointer.
+			\item On Linux, argv [or envp] can be specified as NULL, which has the same effect as specifying  this  argument as a pointer to a list containing a single NULL pointer.
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Shellcoding: Syscall and parameter passing}
+	\begin{block}{How to pass parameters?}
+		\begin{itemize}
+			\item Use the calling convention for syscalls!
+				\begin{description}
+					\item[x86\_64]rdi, rsi, rdx, r10, r8 and r9.
+					\item[x86]ebx, ecx, edx, esi, edi and ebp.
+				\end{description}
+			\item Other parameters go into the stack.
+			\item \emph{execve} parameters:
+				\begin{description}
+					\item[x86\_64]$rdi \implies "/bin/bash", rsi \implies ["/bin/bash",
+						NULL], rdx \implies NULL$
+					\item[x86]$ebx \implies "/bin/bash", ecx \implies ["/bin/bash", NULL], edx \implies NULL$
+				\end{description}
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Shellcoding: Data reference}
+	\subsection{Data reference}
+	\begin{block}{The reference problem}
+		\begin{itemize}
+			\item The shellcode must know the reference of \emph{``/bin/bash''}, argv and env.
+			\item The shellcode is not compiled with the program it's intended to run: it must be designed as a \emph{Position Independent Code}, i.e. the shellcode can't use absolute reference.
+			\item Therefore you must use relative addressing, but before IA-64 it was not possible.
+		\end{itemize}
+	\end{block}
+	\acode
 	\begin{lstlisting}
-		execve("/bin/bash", ["/bin/bash", NULL], NULL);
+		filename db '/bin/bash',0
+		; What will be the address of filename in any program?
+		mov rdi, ?
+	\end{lstlisting}
+
+	\framebreak
+
+	\begin{block}{Old IA-32 way}
+		\begin{itemize}
+			\item You use a trick: jmp just before the data location, then do a
+				call.
+			\item The call Instruction pushes the next instruction pointer onto the
+				stack, which is equal to the \emph{``/bin/bash''} address.
+		\end{itemize}
+	\end{block}
+	\acode
+	\begin{lstlisting}
+		jmp filename
+		run:
+		  pop ebx ; ebx now contains "/bin/bash" reference
+		  ; ...
+		filename:
+		  call run
+		  db '/bin/bash',0
+	\end{lstlisting}
+	\begin{block}{New IA-64 way}
+		\begin{itemize}
+			\item IA-64 introduces the RIP relative addressing.
+			\item \emph{[rel filename]} becomes \emph{[rip + offset]}
+		\end{itemize}
+	\end{block}
+	\acode
+	\begin{lstlisting}
+		lea rdi, [rel message] ; now rdi contains
+		                       ; the string reference
+		; ...
+
+		filename db '/bin/bash',0
+	\end{lstlisting}
+	\begin{block}{Generic Way}
+		\begin{itemize}
+			\item You can push the string in hex format into the stack.
+			\item The stack pointer is then the string reference.
+		\end{itemize}
+	\end{block}
+	\acode
+	\begin{lstlisting}
+		push 0x00000068 ; 0x00, 'h'
+		push 0x7361622f ; 'sab/'
+		push 0x6e69622f ; 'nib/'
+		mov ebx, esp ; now ebx contains the string reference
+		; ...
 	\end{lstlisting}
 \end{frame}
 
@@ -173,7 +202,8 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Shellcode: Zero-byte problem}
+\begin{frame}{Shellcode: Zero-bytes problem}
+	\subsection{Zero-bytes problem}
 	\begin{block}{Zero-bytes presence is caused by data and addresses}
 		\begin{itemize}
 			\item \emph{mov rax, 11h} is equivalent to \emph{mov rax, 0000000000000011h}.
@@ -183,9 +213,9 @@
 	\end{block}
 	\begin{block}{Solutions}
 		\begin{itemize}
-			\item Use \emph{xor} operation can zero a register.
+			\item Use \emph{xor} operation to zero a register.
 			\item Use smaller registers (e.g.: rax $\rightarrow$ eax $\rightarrow$ ax $\rightarrow$ [ah,al])
-			\item Use \emph{add} operation: immediate operators are not expanded.
+			\item Use \emph{add} operation: immediate operator is not expanded.
 			\item Place non-null marker and substitute them inside the code.
 			\item Make a relative reference offset negative.
 		\end{itemize}
