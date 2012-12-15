@@ -57,8 +57,9 @@
 \logo{ \includegraphics[height=1cm]{imgs/CeSeNA.png}}
 
 \AtBeginSection[]{ % Do nothing for \section*
-	\begin{frame}<beamer>
+	\begin{frame}<beamer>[shrink]
 		\frametitle{Outline}
+		\vspace{2mm}
 		\tableofcontents[current]
 	\end{frame}
 	\addtocounter{framenumber}{-1}
@@ -75,7 +76,8 @@
 }
 
 
-\begin{frame}{Outline}
+\begin{frame}[shrink]{Outline}
+	\vspace{2mm}
 	\tableofcontents
 \end{frame}
 
