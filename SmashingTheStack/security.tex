@@ -4,11 +4,6 @@
 		\begin{itemize}
 			\item Various methods and techniques\ldots
 			\item \ldots{}and various consideration.
-<<<<<<< HEAD
-			\item Which programming languages?
-			\item How to deal with legacy code?
-			\item Need of automatic protection.
-=======
 			\item Which programming language?
 			\item How to deal with legacy code?
 			\item How to develop automatic protection?
@@ -97,7 +92,7 @@
 	\begin{columns}[T]
 		\begin{column}{.5\textwidth}
 			{\small \emph{\alert{gcc -m32 -fno-stack-protector test.c}}}
-			\acodenonu
+			\acodesmall
 			\begin{lstlisting}
 				push ebp
 				mov  ebp,esp
@@ -113,7 +108,7 @@
 		\end{column}
 		\begin{column}{.5\textwidth}
 			{\small \emph{\alert{gcc -m32 -fstack-protector test.c}}}
-			\acodenonu
+			\acodesmall
 			\begin{lstlisting}
 				push ebp
 				mov  ebp,esp
@@ -186,7 +181,6 @@
 			\item First implemented on Linux \emph{2.6.8} and on MS Windows since
 				\emph{XP SP2} and \emph{Server 2003}.
 			\item Currently implemented by all OS (Linux, Mac OS X, iOS, Microsoft Windows and Android).
->>>>>>> ac0198929f92482bb1ede56ef59eb770f70d268a
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -270,15 +264,15 @@
 
 \begin{frame}[fragile]{Security: ASLR example}
 	\begin{lstlisting}
-	# sysctl -w kernel.randomize_va_space=0
-	# for i in {1..5}; do ./aslr ; done
+	$ sudo sysctl -w kernel.randomize_va_space=0
+	$ for i in {1..5}; do ./aslr ; done
 		BP: 0x7fffffffe750
 		BP: 0x7fffffffe750
 		BP: 0x7fffffffe750
 		BP: 0x7fffffffe750
 		BP: 0x7fffffffe750
-	# sysctl -w kernel.randomize_va_space=1
-	# for i in {1..5}; do ./aslr ; done
+	$ sudo sysctl -w kernel.randomize_va_space=1
+	$ for i in {1..5}; do ./aslr ; done
 		BP: 0x7fffe03e49d0
 		BP: 0x7fff01cd44a0
 		BP: 0x7fff23ac2450
