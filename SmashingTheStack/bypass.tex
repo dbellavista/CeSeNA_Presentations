@@ -2,7 +2,7 @@
 \begin{frame}[fragile, allowframebreaks]{Mitigations Bypass}
 
 	\begin{center}\huge
-	Do these mitigations are enough??
+	Are these mitigations enough??
 	\end{center}
 	
 	\begin{block}{Spoiler: NO.}
@@ -112,7 +112,7 @@
 
 \begin{block}{SEH based stack smashing}
 Generally depends on how compiler handle user define Exception Handlers, and in many case its possible (with gcc and VC++ both).\\
-{\bf Here we introduce how to exploit the VC++ SEH (Structured Exception Handler)}
+%{\bf Here we introduce how to exploit the VC++ SEH (Structured Exception Handler)}
 \end{block}
 
 \framebreak
@@ -121,19 +121,19 @@ Generally depends on how compiler handle user define Exception Handlers, and in 
         \label{fig:seh-stack-frame}
         \caption{Stack frame with SEH under Windows}
     \end{figure}	
-\framebreak
-	\begin{figure}
-        \includegraphics[width=0.55\textwidth]{imgs/seh-detail.png}
-        \label{fig:seh-detail}
-        \caption{SEH structure (list) under Windows}
-    \end{figure}
+%\framebreak
+%	\begin{figure}
+%        \includegraphics[width=0.55\textwidth]{imgs/seh-detail.png}
+%        \label{fig:seh-detail}
+%        \caption{SEH structure (list) under Windows}
+%    \end{figure}
    
-\framebreak
-	\begin{figure}
-        \includegraphics[width=0.6\textwidth]{imgs/seh-exploit.png}
-        \label{fig:seh-exploit}
-        \caption{SEH exploiting under Windows}
-    \end{figure}
+%\framebreak
+%	\begin{figure}
+%        \includegraphics[width=0.6\textwidth]{imgs/seh-exploit.png}
+%        \label{fig:seh-exploit}
+%        \caption{SEH exploiting under Windows.\\NOTE: during prologue of EH address of pointer to nextSEH was put on stack, so pop;pop;ret; load shellcode addr in EIP}
+%    \end{figure}
 
 \end{frame}
 
@@ -168,6 +168,47 @@ May we craft the stack in a manner to simulate a function call without CALL?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ROP}
-\begin{frame}[fragile, allowframebreaks]{Return Oriented Programming}
-	TBD
+\begin{frame}[fragile, allowframebreaks]{ROP}
+
+\begin{itemize}
+\item What if we need to provide a \emph{system()} parameter  which is in a randomized memory area?
+\item Is there a way to do some computation without code injection?
+\end{itemize}
+
+\begin{block}{Return Oriented Programming}
+Programming technique that borrow chunks of pre-existent code, control flow is controlled by jumping to these ``{\bf \emph{gadgets}}''.
+\end{block}
+
+\begin{block}{Gadget}
+In ROP jargon a ``gadget'' is a collection of sequential instructions which end with a \emph{RET (0xc3)} (typically one or two instruction before RET).\\
+\emph{{\bf NOTE}: x86 works with processors unaligned memory addresses, so we can found lots of gadgets\ldots}
+\end{block}
+
+\framebreak 
+
+\begin{block}{How to program in ROP}
+\begin{columns}[c] 
+    \column{.5\textwidth}
+    \begin{itemize}
+    \item {\bf ESP} works similar to {\bf EIP}, like a \emph{gadget} pointer
+   	\item Putting \emph{gadget} address on stack enable us to sequentially execute arbitrary chunks of codes.
+   	\item By controlling ESP we could govern the ROP control flow.
+	\end{itemize}     
+    \column{.5\textwidth} 
+    \begin{itemize}
+    \item {\bf Gadgets} may not be what we exactly need (eg. mov eax,esp; ret), they could contain also undesired instruction (eg. mov eax,esp;push ebx;ret)
+    \item ROP programming is typically{\bf Touring-Complete}, on condition that target program is sufficiently large.
+    \item Manual ROP programming is quite a mess\ldots some \emph{ROP Compilers} exists :)
+	\end{itemize}
+\end{columns}
+\end{block}
+
+\framebreak
+
+	\begin{figure}
+        \includegraphics[width=0.5\textwidth]{imgs/rop-stack.png}
+        \label{fig:rop-stack}
+        \caption{Stack during a ROP based stack smashing, try to figure out what happens (ia32)}
+    \end{figure}
+
 \end{frame}
