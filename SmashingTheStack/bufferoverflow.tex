@@ -7,7 +7,7 @@
 %*(quick Example ?)
 %\end{frame}
 
-\subsection{What is BOF?}
+%\subsection{What is BOF?}
 \begin{frame}[fragile,allowframebreaks]{What is BOF?}
 	\begin{figure}
 		\centering
@@ -73,4 +73,36 @@
 \end{frame}
 
 \subsection{Heap-based Overflow}
+\begin{frame}[fragile,allowframebreaks]{Heap-based Overflow}
+	Heap-based overflow is a type of buffer overflow that occurs in the heap data area. Memory on the heap is dynamically allocated by the application at run-time and typically contains program data.\\
+\begin{columns}[T]
+	\begin{column}{.47\textwidth}
+%	\begin{block}{A quick look}
+		%Heap overflows are exploitable in a different manner to that of stack-based overflows.\\
+		Exploitation is performed by corrupting this data in specific ways to cause the application to overwrite internal structures such as linked list pointers.\\
+		The canonical heap overflow technique overwrites dynamic memory allocation linkage (such as malloc meta data) and uses the resulting pointer exchange to overwrite a program function pointer.
+%	\end{block}
+	\end{column}
+	\begin{column}{.5\textwidth}
+		\includegraphics[width=\textwidth]{imgs/heap.png}
+		\label{fig:heap}
+	\end{column}
+\end{columns}
+\end{frame}
+
 \subsection{Stack-based Overflow}
+\begin{frame}[fragile,allowframebreaks]{Stack-based Overflow}
+	Stack-based buffer overflows manipulate the program to their advantage in one of several ways:
+	\begin{itemize}
+		\item By overwriting a local variable that is near the buffer in memory on the stack to change the behaviour of the program which may benefit the attacker.
+		\item By overwriting a function pointer, or exception handler, which is subsequently executed.
+		\item By overwriting the return address in a stack frame. Once the function returns, execution will resume at the return address as specified by the attacker, usually a user input filled buffer.
+	\end{itemize}
+\framebreak
+	\begin{block}{Overwriting the return address}
+	\end{block}
+\end{frame}
+\subsection{Unsafe functions}
+\begin{frame}[fragile,allowframebreaks]{Unsafe functions}
+C functions that don't check the size of the destination buffers, such as gets(), strcpy(), strcat(), printf(), sprintf(), ...
+\end{frame}
