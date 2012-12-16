@@ -21,7 +21,8 @@
 \usepackage{listings}
 \usepackage{xcolor}
 
-%\usepackage{url}
+\usepackage{url}
+\usepackage{multicol}
 
 %\usepackage[pdftex,bookmarks,colorlinks,%
 %pdfauthor={Daniele Bellavista},%
@@ -40,7 +41,10 @@
 	\lstset{ language={[x86masm]Assembler}, basicstyle=\small, numbers=left, numberstyle=\tiny\color{gray},backgroundcolor=\color{white},frame=single, captionpos=b, breaklines=true,title=\lstname, keywordstyle=\color{blue},commentstyle=\color{dkgreen}, stringstyle=\color{mauve}, escapeinside={\%*}{*} }}
 
 \newcommand{\acodenonu}{
-	\lstset{ language={[x86masm]Assembler}, basicstyle=\small, backgroundcolor=\color{white},frame=single, captionpos=b, breaklines=true,title=\lstname, keywordstyle=\color{blue},commentstyle=\color{dkgreen}, stringstyle=\color{mauve}, escapeinside={\%*}{*} }}
+	\lstset{ language={[x86masm]Assembler}, basicstyle=\small, numbers=none, backgroundcolor=\color{white},frame=single, captionpos=b, breaklines=true,title=\lstname, keywordstyle=\color{blue},commentstyle=\color{dkgreen}, stringstyle=\color{mauve}, escapeinside={\%*}{*} }}
+
+\newcommand{\acodesmall}{
+	\lstset{ language={[x86masm]Assembler}, basicstyle=\tiny, numbers=none, backgroundcolor=\color{white},frame=single, captionpos=b, breaklines=true,title=\lstname, keywordstyle=\color{blue},commentstyle=\color{dkgreen}, stringstyle=\color{mauve}, escapeinside={\%*}{*} }}
 
 \title[]{Smashing the Stack}
 
@@ -59,7 +63,9 @@
 \AtBeginSection[]{ % Do nothing for \section*
 	\begin{frame}<beamer>
 		\frametitle{Outline}
-		\tableofcontents[current]
+		\begin{multicols}{2}
+			\tableofcontents[current]
+		\end{multicols}
 	\end{frame}
 	\addtocounter{framenumber}{-1}
 }
@@ -76,7 +82,9 @@
 
 
 \begin{frame}{Outline}
-	\tableofcontents
+	\begin{multicols}{2}
+		\tableofcontents
+	\end{multicols}
 \end{frame}
 
 % Introduction to registers, stack and function frame
