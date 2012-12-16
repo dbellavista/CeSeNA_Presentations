@@ -23,20 +23,20 @@
 		\begin{itemize}
 			\item According to \url{www.tiobe.com} C is the most used Programming Language in 2012.
 			\item \alert{Legacy code still exists: it can't be rewritten!}
-			\item Operating systems and compiler should offer automatic protections.
+			\item Operating systems and compilers should offer automatic protections.
 		\end{itemize}
 	\end{block}
 \end{frame}
 
 
 \subsection{Stack Cookies}
-\begin{frame}{Security: Automatic Stack Smashing detection using stack cookies}
+\begin{frame}{Security: Automatic stack smashing detection using stack cookies}
 	\begin{block}{An automatic protection introduced at compile time}
 	\begin{itemize}
 		\item Random words (cookies) inserted into the stack during the function prologue.
-		\item Before returning, the function epilogue checks if the words are intact.
+		\item Before returning, the function epilogue checks if those words are intact.
 		\item If a stack smash occurs, cookie smashing is very likely to happen.
-		\item The program enters in a \emph{failure} state (usually \emph{SIGSEV}).
+		\item If so, the process enters in a \emph{failure} state (e.g. raising a \emph{SIGSEV}).
 	\end{itemize}
 	\end{block}
 \end{frame}
@@ -68,7 +68,8 @@
 		\begin{columns}
 			\begin{column}{.5\textwidth}
 		\begin{itemize}
-			\item It uses a canary word (\textbf{guard}) to protect the base pointer.
+			\setlength{\leftmargini}{0pt}
+			\item It uses a stack cookies (\emph{guard}), to protect the base pointer.
 			\item Relocate all arrays to the top of the stack in order to prevent variable corruption (\textbf{B} before \textbf{C}).
 			\item Copies arguments into new variables below the arrays, preventing argument corruption (\textbf{A} copied into \textbf{C}).
 			\item SSP is used by default since gcc 4.0 (2010), however some systems (like \emph{Arch Linux}) keep it disabled.
