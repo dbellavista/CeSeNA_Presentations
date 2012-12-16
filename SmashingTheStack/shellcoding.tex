@@ -15,17 +15,18 @@
 \end{frame}
 
 \begin{frame}[fragile]{Shellcoding: Creation steps}
+	\begin{block}{Assuming direct control}
+		\begin{enumerate}
+			\item Invoke the execve syscall.
+			\item Refer the string \emph{``/bin/bash''} and the argument array.
+			\item Optimize the payload.
+			\item Perform the buffer overflow.
+		\end{enumerate}
+	\end{block}
 	\ccode
 	\begin{lstlisting}
 		execve("/bin/bash", ["/bin/bash", NULL], NULL);
 	\end{lstlisting}
-	\begin{block}{Knowledge required:}
-		\begin{enumerate}
-			\item Invoking a syscall.
-			\item Refer the string \emph{``/bin/bash''} and the argument array.
-			\item Optimize the payload.
-		\end{enumerate}
-	\end{block}
 \end{frame}
 
 \begin{frame}[fragile]{Shellcoding: Syscalls}
@@ -34,9 +35,9 @@
 		\begin{itemize}
 			\item Syscalls are invokable using a numerical id.
 			\item Ids are defined into \emph{unistd\_32.h} for x86 systems and \emph{unistd\_64.h} for x86\_64 systems.
-			\item On x86\_64 systems the assembler operation \emph{syscall} execute the syscall identified by rax.
+			\item On x86\_64 systems the assembler operation \emph{syscall} execute the syscall identified by \emph{rax}.
 			\item On x86 systems the assembler operation \emph{int 80h} raises a software interrupt, which leads to the execution
-				of the syscall identified by eax.
+				of the syscall identified by \emph{eax}.
 		\end{itemize}
 	\end{block}
 	\acode
@@ -95,9 +96,12 @@
 			\item Other parameters go into the stack.
 			\item \emph{execve} parameters:
 				\begin{description}
-					\item[x86\_64]$rdi \implies "/bin/bash", rsi \implies ["/bin/bash",
-						NULL], rdx \implies NULL$
-					\item[x86]$ebx \implies "/bin/bash", ecx \implies ["/bin/bash", NULL], edx \implies NULL$
+					\item[x86\_64] $rdi\implies "/bin/bash"$\\
+						$rsi\implies ["/bin/bash", NULL]$\\
+						$rdx\implies NULL$\\
+					\item[x86]$ebx \implies "/bin/bash"$\\
+						$ecx \implies ["/bin/bash", NULL]$\\
+						$edx \implies NULL$
 				\end{description}
 		\end{itemize}
 	\end{block}
