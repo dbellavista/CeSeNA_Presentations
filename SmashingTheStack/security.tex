@@ -4,16 +4,16 @@
 		\begin{itemize}
 			\item Various methods and techniques\ldots
 			\item \ldots{}and various consideration.
-			\item Which programming languages?
+			\item Which programming language?
 			\item How to deal with legacy code?
-			\item Need of automatic protection.
+			\item How to develop automatic protection?
 		\end{itemize}
 	\end{block}
 \end{frame}
 
 \subsection{Programming Languages}
 \begin{frame}{Security: Programming Language}
-	\begin{block}{Do programming languages automatically protect stack?}
+	\begin{block}{Do programming languages offer automatic stack protection?}
 		\begin{description}
 			\item[C/C++]these languages don't provide built-int protection, but offer
 				\emph{stack-safe} libraries (e.g. $strcpy() \implies strncpy()$).
@@ -29,18 +29,29 @@
 \end{frame}
 
 
-\subsection{StackGuard}
+\subsection{Stack Cookies}
+\begin{frame}{Security: Automatic Stack Smashing detection using stack cookies}
+	\begin{block}{An automatic protection introduced at compile time}
+	\begin{itemize}
+		\item Random words (cookies) inserted into the stack during the function prologue.
+		\item Before returning, the function epilogue checks if the words are intact.
+		\item If a stack smash occurs, cookie smashing is very likely to happen.
+		\item The program enters in a \emph{failure} state (usually \emph{SIGSEV}).
+	\end{itemize}
+	\end{block}
+\end{frame}
+
 \begin{frame}{Security: StackGuard (1998)}
-	\begin{block}{A patch for gcc}
+	\begin{block}{A patch for older gcc}
 		\begin{columns}
 			\begin{column}{.6\textwidth}
 				\begin{itemize}
 					\item ``A simple compiler technique that virtually eliminates buffer
 						overflow vulnerabilities with only modest performance penalties''
 						\cite{stackguard}.
-					\item It offers a method for detecting in a portable and efficient way
-						changes to the return address.
-					\item StackGuard uses a random \emph{canary} word inserted before
+					\item It offers a method for detecting return address changes in a
+						portable and efficient way.
+					\item StackGuard uses a random \emph{canary word} inserted before
 						the return address. The callee, before returning, checks if the canary
 						word is unaltered.
 				\end{itemize}
@@ -52,16 +63,15 @@
 	\end{block}
 \end{frame}
 
-\subsection{Stack-Smashing Protector}
-\begin{frame}{Security: GCC Stack-Smashing Protector (2001)}
+\begin{frame}{Security: Stack-Smashing Protector (2001)}
 	\begin{block}{An improved patch for gcc}
 		\begin{columns}
 			\begin{column}{.5\textwidth}
 		\begin{itemize}
-			\item Uses canary word (\textbf{guard}) to protect the base pointer.
+			\item It uses a canary word (\textbf{guard}) to protect the base pointer.
 			\item Relocate all arrays to the top of the stack in order to prevent variable corruption (\textbf{B} before \textbf{C}).
 			\item Copies arguments into new variables below the arrays, preventing argument corruption (\textbf{A} copied into \textbf{C}).
-			\item SSP is used by default since gcc 4.0 (2010).
+			\item SSP is used by default since gcc 4.0 (2010), however some systems (like \emph{Arch Linux}) keep it disabled.
 		\end{itemize}
 			\end{column}
 			\begin{column}{.5\textwidth}
@@ -69,7 +79,61 @@
 			\end{column}
 		\end{columns}
 	\end{block}
+\end{frame}
 
+\begin{frame}[shrink,fragile]{Security: SSP examples}
+	\ccode
+	\begin{lstlisting}
+		void test(int (*f)(int), int z, char* buf) {
+		  char buffer[64]; int a = f(z);
+		}
+	\end{lstlisting}
+	\vspace{-1cm}
+	\begin{columns}[T]
+		\begin{column}{.5\textwidth}
+			{\small \emph{\alert{gcc -m32 -fno-stack-protector test.c}}}
+			\acodenonu
+			\begin{lstlisting}
+				push ebp
+				mov  ebp,esp
+				sub  esp,0x68
+				mov  eax,[ebp+0xc]
+				mov  [esp],eax
+				mov  eax,[ebp+0x8]
+				call eax
+				mov  [ebp-0xc],eax
+				leave
+				ret
+			\end{lstlisting}
+		\end{column}
+		\begin{column}{.5\textwidth}
+			{\small \emph{\alert{gcc -m32 -fstack-protector test.c}}}
+			\acodenonu
+			\begin{lstlisting}
+				push ebp
+				mov  ebp,esp
+				sub  esp,0x78
+				mov  eax,[ebp+0x8]
+				mov  [ebp-0x5c],eax
+				mov  eax,[ebp+0x10]
+				mov  [ebp-0x60],eax
+				mov  eax,gs:0x14
+				mov  [ebp-0xc],eax
+				xor  eax,eax
+				mov  eax,[ebp+0xc]
+				mov  [esp],eax
+				mov  eax,[ebp-0x5c]
+				call eax
+				mov  [ebp-0x50],eax
+				mov  eax,[ebp-0xc]
+				xor  eax,gs:0x14
+				je   8048458 <test+0x3c>
+				call 80482f0 <__stack_chk_fail@plt>
+				leave
+				ret
+			\end{lstlisting}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \subsection{ASLR}
@@ -90,20 +154,20 @@
 
 \begin{frame}[fragile]{Security: ASLR example}
 	\begin{lstlisting}
-	# sysctl -w kernel.randomize_va_space=0
-	# for i in {1..5}; do ./aslr ; done
-		BP: 0x7fffffffe750
-		BP: 0x7fffffffe750
-		BP: 0x7fffffffe750
-		BP: 0x7fffffffe750
-		BP: 0x7fffffffe750
-	# sysctl -w kernel.randomize_va_space=1
-	# for i in {1..5}; do ./aslr ; done
+	$ sudo sysctl -w kernel.randomize_va_space=1
+	$ for i in {1..5}; do ./aslr ; done
 		BP: 0x7fffe03e49d0
 		BP: 0x7fff01cd44a0
 		BP: 0x7fff23ac2450
 		BP: 0x7fffacc72fc0
 		BP: 0x7fffa20fca50
+	$ sudo sysctl -w kernel.randomize_va_space=0
+	$ for i in {1..5}; do ./aslr ; done
+		BP: 0x7fffffffe750
+		BP: 0x7fffffffe750
+		BP: 0x7fffffffe750
+		BP: 0x7fffffffe750
+		BP: 0x7fffffffe750
 	\end{lstlisting}
 \end{frame}
 
@@ -120,4 +184,3 @@
 		\end{itemize}
 	\end{block}
 \end{frame}
-
