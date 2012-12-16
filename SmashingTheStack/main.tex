@@ -21,7 +21,8 @@
 \usepackage{listings}
 \usepackage{xcolor}
 
-%\usepackage{url}
+\usepackage{url}
+\usepackage{multicol}
 
 %\usepackage[pdftex,bookmarks,colorlinks,%
 %pdfauthor={Daniele Bellavista},%
@@ -59,8 +60,9 @@
 \AtBeginSection[]{ % Do nothing for \section*
 	\begin{frame}<beamer>[shrink]
 		\frametitle{Outline}
-		\vspace{2mm}
-		\tableofcontents[current]
+		\begin{multicols}{2}
+			\tableofcontents[current]
+		\end{multicols}
 	\end{frame}
 	\addtocounter{framenumber}{-1}
 }
@@ -77,8 +79,9 @@
 
 
 \begin{frame}[shrink]{Outline}
-	\vspace{2mm}
-	\tableofcontents
+		\begin{multicols}{2}
+			\tableofcontents
+		\end{multicols}
 \end{frame}
 
 % Introduction to registers, stack and function frame
