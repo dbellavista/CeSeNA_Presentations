@@ -191,16 +191,16 @@ In ROP jargon a ``gadget'' is a collection of sequential instructions which end 
 
 \begin{block}{How to program in ROP}
 \begin{columns}[c] 
-    \column{.5\textwidth}
+    \column{.4\textwidth}
     \begin{itemize}
     \item {\bf ESP} works similar to {\bf EIP}, like a \emph{gadget} pointer
    	\item Putting \emph{gadget} address on stack enable us to sequentially execute arbitrary chunks of codes.
    	\item By controlling ESP we could govern the ROP control flow.
 	\end{itemize}     
-    \column{.5\textwidth} 
+    \column{.6\textwidth} 
     \begin{itemize}
     \item {\bf Gadgets} may not be what we exactly need (eg. mov eax,esp; ret), they could contain also undesired instruction (eg. mov eax,esp;push ebx;ret)
-    \item ROP programming is typically{\bf Touring-Complete}, on condition that target program is sufficiently large.
+    \item If program is sufficiently large, ROP programming is typically{\bf Turing-Complete}
     \item Manual ROP programming is quite a mess\ldots some \emph{ROP Compilers} exists :)
 	\end{itemize}
 \end{columns}
