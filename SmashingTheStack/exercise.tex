@@ -1,4 +1,43 @@
 \section{Exercise}
-\begin{frame}{Exercise}
-	
+\begin{frame}[fragile,allowframebreaks]{Exercise}
+	Exercises source available at \url{http://goo.gl/WupDs}\\
+	Some exercises need to connect via ssh to cesena.ing2.unibo.it\\
+	 as pwn at port 7357 to test your solution.\\
+	(ssh pwn@cesena.ing2.unibo.it -p 7357)\\
+	\begin{figure}
+		\centering
+		\includegraphics[height=.4\textheight]{imgs/qrcode.png}
+		\caption{Exercises source}
+		\label{fig:qrcode}
+	\end{figure}
+
+\framebreak
+	\begin{block}{Warming up}
+		\emph{auth}\\
+		Just a basic overflow.\\
+		Don't look too far, it's just next to you.
+	\end{block}
+\framebreak
+	\begin{block}{Function pointer overwrite}
+		\emph{nameless}\\
+		Hey! A function pointer!\\
+		Yes, we probably need \emph{gdb}
+	\end{block}
+\framebreak
+	\begin{block}{Return OverWrite Easy}
+		\emph{rowe}\\
+		We are getting serious\\
+		You'll have to OverWrite the return address!
+	\end{block}
+\framebreak
+	\begin{block}{Return OverWrite Hard}
+		\emph{rowh}\\
+		Just like the previuos, but can you also prepare the data on the stack?
+	\end{block}
+\framebreak
+	\begin{block}{Notes program}
+		\emph{note}\\
+		Sample notes program, ./note reads the notes, ./note "my note" adds a note\\
+		You'll need a shellcode.
+	\end{block}
 \end{frame}
