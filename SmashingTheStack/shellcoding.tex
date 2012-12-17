@@ -10,7 +10,7 @@
 	\end{block}
 	\ccode
 	\begin{lstlisting}
-		execve("/bin/bash", ["/bin/bash", NULL], NULL);
+		execve("/bin/bash", ["/bin/bash"], []);
 	\end{lstlisting}
 \end{frame}
 
@@ -25,7 +25,7 @@
 	\end{block}
 	\ccode
 	\begin{lstlisting}
-		execve("/bin/bash", ["/bin/bash", NULL], NULL);
+		execve("/bin/bash", ["/bin/bash"], []);
 	\end{lstlisting}
 \end{frame}
 
@@ -83,6 +83,10 @@
 			\item On Linux, argv [or envp] can be specified as NULL, which has the same effect as specifying  this  argument as a pointer to a list containing a single NULL pointer.
 		\end{itemize}
 	\end{block}
+	\ccode
+	\begin{lstlisting}
+		execve("/bin/bash", ["/bin/bash", NULL], NULL);
+	\end{lstlisting}
 \end{frame}
 
 \begin{frame}{Shellcoding: Syscall and parameter passing}
