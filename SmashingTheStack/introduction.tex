@@ -8,7 +8,7 @@ A special thanks to {\bf CeSeNA Security} group and \emph{Marco Ramilli} our ``o
 \subsection{Smash the stack}
 \begin{frame}[fragile, allowframebreaks]{Smash the stack}
 \begin{block}{\emph{Smash The Stack} [C programming] n.}
-On many C implementations it is possible to corrupt the execution stack by writing past the end of an array declared auto in a routine. Code that does this is said to smash the stack, and can cause return from the routine to jump to a random address. This can produce some of the most insidious data-dependent bugs known to mankind.
+On many C implementations it is possible to corrupt the execution stack by writing past the end of an array declared auto in a routine. \\Code that does this is said to smash the stack, and can cause return from the routine to jump to a random address. \\This can produce some of the most insidious data-dependent bugs known to mankind.
 \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,8 +25,9 @@ the monitor that causes a system crash.''}
 
 \begin{block}{The morris Worm - 2/11/1988}
 Robert Tappan Morris (Jr.) wrote and released this while still a student at Cornell University. Aside from being the first computer worm to be distributed via the Internet, the worm was the public’s introduction to \emph{``Buffer Overflow Attacks''}, as one of the worms attack vectors was a classic stack smash against the \emph{fingerd} daemon.\\
-In his analysis of the worm, Eugene Spafford writes the following: ``The bug exploited to break fingerd involved {\bf overrunning the buffer} the daemon used for input. \ldots \\
-The idea of using buffer overflow to inject code into a program and cause it to jump to that code occurred to me while reading fingerd.c''
+In his analysis of the worm, Eugene Spafford writes the following:\\
+``\emph{The bug exploited to break fingerd involved {\bf overrunning the buffer} the daemon used for input. \ldots \\
+The idea of using buffer overflow to inject code into a program and cause it to jump to that code occurred to me while reading fingerd.c}''
 \end{block}
 
 \framebreak
@@ -34,11 +35,11 @@ The idea of using buffer overflow to inject code into a program and cause it to 
 \begin{block}{How to Write Buffer Overflow 20/10/1995}
 \emph{by Peiter Zatko (mudge)}\\
 ``\ldots \\
-    The '{\bf Segmentation fault (core dumped)}' is what we wanted to see. This
+    \emph{The '{\bf Segmentation fault (core dumped)}' is what we wanted to see. This
     tells us there is definitely an attempt to access some memory address
     that we shouldn't. If you do much in 'C' with pointers on a unix
     machine you have probably seen this (or Bus error) when pointing or
-    dereferencing incorrectly.\\
+    dereferencing incorrectly.}\\
 \ldots ''
 \end{block}
 
