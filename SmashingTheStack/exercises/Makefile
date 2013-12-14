@@ -5,7 +5,7 @@
 CC=gcc
 CCPAR=-w -m32 -fno-stack-protector
 
-all: auth rowe rowh note
+all: auth rowe rowh note nameless exotic
 
 auth: auth.c
 	$(CC) $(CCPAR) auth.c -o auth
@@ -19,8 +19,14 @@ rowh: rowh.c
 note: note.c
 	$(CC) $(CCPAR) note.c -o note
 
+nameless: nameless.c
+	$(CC) $(CCPAR) nameless.c -o nameless
+
+exotic: exotic.c
+	$(CC) $(CCPAR) exotic.c -o exotic
+
 clean:
-	rm auth rowe rowh note
+	rm auth rowe rowh note nameless exotic
 
 # vim:ft=make
 #
