@@ -1,56 +1,123 @@
 \section{Introduction}
+
 \begin{frame}[fragile, allowframebreaks]{Introduction}
+
 \begin{block}{Acknowledgement}
 A special thanks to {\bf CeSeNA Security} group and \emph{Marco Ramilli} our ``old'' mentor...
 \end{block}
+
+\begin{block}{Where to find us}
+\begin{itemize}
+\item Website: {\small \url{http://cesena.ing2.unibo.it/}}
+\item Facebook: {\small \url{https://www.facebook.com/groups/105136176187559/} }
+\item G+: {\small \url{https://plus.google.com/communities/101402441314003721224}}
+\end{itemize}
+\end{block}
+
+\framebreak
+
+\begin{block}{Before smashing things}
+We need to say some words about security in general :) !
+\end{block}
+
+\framebreak
+
+\begin{block}{Security facts in modern era}
+\begin{itemize}
+\item Each security breach costs over 500k to Corporates\\ 
+{\small \url{http://goo.gl/RAUgOg}}
+\item Cyber-Security market is growing (\emph{63 billion in 2011, 120 billions in 2017})\\ {\small \url{http://goo.gl/Zq8Efj}}
+\item Zero-Day exploit black markets, and Bug-Bounty (\emph{yes Microsoft is doing it too})
+\end{itemize}
+\end{block}
+
+\framebreak
+
+\begin{block}{Is someone still using C}
+Lot of C/C++ out there.. {\small \url{http://langpop.com/}  \url{http://www.tiobe.com/} }
+\end{block}
+
+\begin{block}{Buffer OverFlows are old stuff}
+\begin{center}
+\begin{tabular}{l|c}
+\hline
+Who  & \emph{NGINX Web server} \\
+\hline 
+What & \emph{stack-based buffer overflow} \\
+\hline
+When & \emph{ \Large \bf \color{red} 2013 } \\
+\hline
+\end{tabular}
+\end{center}
+\hfill Really??\\
+\hfill \emph{Check this CVE: \url{http://goo.gl/4cIBqI}}
+\end{block}
+
 \end{frame}
 
-\subsection{Smash the stack}
+\subsection{Smashing the stack}
+
 \begin{frame}[fragile, allowframebreaks]{Smash the stack}
 \begin{block}{\emph{Smash The Stack} [C programming] n.}
-On many C implementations it is possible to corrupt the execution stack by writing past the end of an array declared auto in a routine. \\Code that does this is said to smash the stack, and can cause return from the routine to jump to a random address. \\This can produce some of the most insidious data-dependent bugs known to mankind.
+\begin{itemize}
+\item On many C implementations it is possible to {\bf corrupt the execution stack} by \underline{writing past the end of an array} declared auto in a routine.
+\item Code that does this is said to smash the stack, and \emph{can cause return from the routine to jump to a random address}.
+\end{itemize}
+\begin{center}
+\bf This can produce some of the most insidious data-dependent bugs known to mankind.
+\end{center}
 \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{A brief time line}
 \begin{frame}[fragile, allowframebreaks]{A brief time line}
+
 \begin{block}{The fist document Overflow Attack (Air Force) - 31/10/1972}
-\emph{``By supplying addresses outside the space allocated to the users
-programs, it is often possible to get the monitor to obtain unauthorized
-data for that user, or at the very least, generate a set of conditions in
-the monitor that causes a system crash.''}
+By \underline{supplying addresses outside the space allocated to the users programs} is possible to: 
+\begin{itemize}
+\item Obtain \underline{unauthorized data}.
+\item Cause a \underline{system crash}.
+\end{itemize}
 \end{block}
 
 \framebreak
 
-\begin{block}{The morris Worm - 2/11/1988}
-Robert Tappan Morris (Jr.) wrote and released this while still a student at Cornell University. Aside from being the first computer worm to be distributed via the Internet, the worm was the public’s introduction to \emph{``Buffer Overflow Attacks''}, as one of the worms attack vectors was a classic stack smash against the \emph{fingerd} daemon.\\
-In his analysis of the worm, Eugene Spafford writes the following:\\
-``\emph{The bug exploited to break fingerd involved {\bf overrunning the buffer} the daemon used for input. \ldots \\
-The idea of using buffer overflow to inject code into a program and cause it to jump to that code occurred to me while reading fingerd.c}''
+\begin{block}{The morris Worm - 02/11/1988}
+	Robert Tappan Morris (Jr.):
+	\begin{itemize}
+ 		\item First computer worm to be distributed via the Internet
+ 		\item Public’s introduction to \underline{Buffer OverFlow (BOF) Attacks}
+ 		\item ...Still student at Cornell University!
+ 	\end{itemize}
+
+\begin{center}
+\bf Using BOF to inject code into a program and cause it to jump to that code.
+\end{center}
+
 \end{block}
 
 \framebreak
 
 \begin{block}{How to Write Buffer Overflow 20/10/1995}
-\emph{by Peiter Zatko (mudge)}\\
-``\ldots \\
-    \emph{The '{\bf Segmentation fault (core dumped)}' is what we wanted to see. This
-    tells us there is definitely an attempt to access some memory address
-    that we shouldn't. If you do much in 'C' with pointers on a unix
-    machine you have probably seen this (or Bus error) when pointing or
-    dereferencing incorrectly.}\\
-\ldots ''
+	\begin{itemize}
+		\item The {\bf Segmentation fault (core dumped)} is what we want.
+		\item This mean \emph{access to some unattended memory address}.
+	\end{itemize}
 \end{block}
 
-\begin{block}{Smashing The Stack For Fun And Profit 8/11/1996}
-\emph{by Elias Levy (Aleph1)}\\
-One of the best article about BoF.
+\begin{block}{Smashing The Stack For Fun And Profit 08/11/1996}
+	\emph{by Elias Levy (Aleph1)}
+	\begin{itemize}
+		\item One of the best article about {\bf BOF}.
+		\item From C to Assembly, BOF and shellcodes.
+	\end{itemize}
 \end{block}
 
 \end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Process Memory}
+
 \begin{frame}[fragile, allowframebreaks]{Process Memory}
 
 \begin{block}{Buffers, Memory and Process}
@@ -60,79 +127,156 @@ program and process are organized.
 
 \begin{itemize}
 \item Program layout is divided in sections like:
-	\begin{list}{}{}
+	\begin{itemize}
 		\item .text, where program instruction are stored
 		\item .data, where program data will be stored
 		\item .bss, where static vars are allocated
 		\item .stack, where {\bf stack frames} live
-	\end{list}
+	\end{itemize}
 \item These sections are typically mapped in memory segments, so they have associated RWX permissions.
 \end{itemize}
 
 \framebreak
 
 \begin{block}{.text}
-The text region is fixed by the program and includes code (instructions) and read-only data.  This region corresponds to the text section of the executable file.  This region is normally marked read-only and any attempt to write to it will result in a \emph{segmentation violation}.
+\begin{itemize}
+\item Code instructions and some read-only data.  
+\item This region corresponds to the \emph{.text section} of the executable file.
+\item Normally marked as Read-Only, any attempt to write to it will result in a \emph{segmentation violation}.
+\end{itemize}
 \end{block}
-\begin{block}{.data .bss}
-The data region contains initialized and uninitialized data. Static variables are stored in this region. The data region corresponds to the data-bss sections of the executable file.  Its size can be changed with the \emph{brk(2)} system call.  If the expansion of the bss-data or the user stack exhausts available memory, the process is blocked and is rescheduled to run again with a larger memory space.\\ 
-New memory is added between the data and stack segments.
-\end{block}
+
 
 \framebreak
+\begin{columns}[T]
+	\begin{column}{.6\textwidth}
+\begin{block}{.data .bss}
+\begin{itemize}
+\item Data region contains initialized data, static variables are stored in this region. 
+\item The data region corresponds to the \emph{data-bss sections} of the executable file.
+\item New memory is typically added \underline{between} the \emph{.data} and \emph{.stack} segments.
+\end{itemize}
+\end{block}
 
-\begin{verbatim}
-  /------------------\ higher
-  |                  | memory
-  |      Stack       | addresses
+	\end{column}
+	\begin{column}{.4\textwidth}
+	\small \begin{verbatim}
+       higher memory 
+  /------------------\ 
+  |                  | 
+  |      Stack       | 
   |------------------|
   |  (Uninitialized) |
   |        Data      |
   |   (Initialized)  |
   |------------------|
-  |       Text       | lower
-  |                  | memory
-  \------------------/ addresses
+  |       Text       | 
+  |                  | 
+  \------------------/ 
+        lower memory
 \end{verbatim}
+\end{column}
+\end{columns}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Stack Frame}
 \begin{frame}[fragile, allowframebreaks]{Stack Frame}
 
-\begin{itemize}
-\item The stack consists of logical stack frames that are pushed when calling a
-function and popped when returning. A stack frame contains the parameters to a
-function, its local variables, and the data necessary to recover the previous
-stack frame, including the value of the instruction pointer at the time of the
-function call.
-\item Depending on the implementation the stack will either grow down (towards
-lower memory addresses), or up. The stack pointer is also implementation
-dependent. It may point to the last address on the stack, or to the next free
-available address after the stack. 
-\item In addition to the stack pointer, which points to the top of the stack, it
-is often convenient to have a frame pointer which points to a fixed location
-within a frame. Some texts also refer to it as a local base pointer.
+\begin{columns}[T]
+	\begin{column}{.6\textwidth}
+	\begin{itemize}
+\item Logical \emph{frames} pushed during function calls and popped when returning. 
+\item {\bf stack frame} contains the \underline{function params}, its \underline{local variables}, and the necessary \underline{data for recovering previous frame}.
+\item So it also contains the value of the {\bf instruction pointer} at the time of the function call.
+\item Stack grows down (towards lower memory addresses)
+\item The \underline{stack pointer} points to the last used address on the stack frame.
+\item The \underline{base pointer} points to the bottom of the stack frame.
 \end{itemize}
+	\end{column}
+	\begin{column}{.3\textwidth}
+	\tiny\begin{verbatim}
+|                              0xffff
+|           <--- Previous
+|                Stack Frame
+|===FRAME=BEGIN===
+| PARN    
+|  ..
+| PAR2      <--- Parameters
+| PAR1
+|-----------
+| OLD_EIP     
+| OLD_EBP   <--- EBP points here
+|-----------
+| Var 1
+|  ..
+| Var N     <--- ESP points here 
+|====FRAME=END====
+|                             
+|
+|                             0x0000
+	\end{verbatim}	
+	
+	
+	\end{column}
+\end{columns}
+
+
 
 \framebreak
 
-\begin{block}{Stack}
-In x86 architecture stack grows in opposite direction w.r.t. memory addresses. 
-Also two registers are dedicated for stack management.
+\begin{block}{Stack in x86-x86\_64}
+Stack grows in opposite direction w.r.t. memory addresses.\\
+Also two registers are dedicated for stack management:
 \begin{description}
 \item[EBP/RBP], points to the {\bf base} of the stack-frame (\emph{higher address})
 \item[EIP/RIP], points to the {\bf top} of the stack-frame (\emph{lower address})
 \end{description}
 \end{block}
 
+\begin{block}{Who setup the stack frame?}
+Calling convention:
+\begin{itemize}
+\item Parameters are pushed by caller.
+\item \emph{EIP} is pushed via \emph{CALL instruction}.
+\item \emph{EBP} and local vars are pushed by called function.
+\end{itemize}
+\hfill \tiny Valid for x86\\
+\hfill x86-64 uses different convention (FAST-CALL)
+\end{block}
+
 \framebreak
 
-\begin{block}{Stack Frame}
-Logical stack frames that are pushed when calling a function and popped when returning.\\
+\begin{block}{Call Prologue and Epilogue}
+\begin{columns}[c] 
+    \column{.4\textwidth} 
+    \acode
+    \tiny
+\begin{lstlisting}
+;params passing*
+call fun   ;push EIP
+push EBP
+mov EBP, ESP
+sub ESP,<param-space>
+\end{lstlisting}
+    \column{.4\textwidth}
+     \acode
+     \tiny
+\begin{lstlisting}
+mov ESP, EBP
+pop EBP ;restore EBP
+ret         ;pop EIP
+\end{lstlisting}
+\end{columns}
+\end{block}
+
+\framebreak
+
+\begin{block}{Stack Frame: Recap}
+Logical \underline{stack frames} that are \emph{pushed in the .stack segment} on function call, popped when returning.\\
 A stack frame contains:
 \begin{itemize}
-\item Parameters passed to the called function (depends on calling convention, not true for linux64)
-\item {\bf Data necessary to recover the previous stack frame, including value of the instruction pointer at the time of the function call}.
+\item Parameters (depends on calling convention, not true for linux64)
+\item {\bf Data for previous frame recovering, also old Instruction Pointer value}.
 \item Local variables
 \end{itemize}
 \end{block}
@@ -144,32 +288,5 @@ A stack frame contains:
         \label{fig:stackframe}
         \caption{Stack frame (ia32 - AT\&T notation)}
     \end{figure}	
-
-\framebreak
-
-\begin{block}{Call Prologue and Epilogue}
-\begin{columns}[c] 
-    \column{.5\textwidth} 
-    \acode
-    \tiny
-\begin{lstlisting}
-;params passing*
-call fun ;it push EIP/RIP
-push EBP
-mov EBP,ESP
-sub ESP,<param-space>
-\end{lstlisting}
-    \column{.5\textwidth}
-     \acode
-     \tiny
-\begin{lstlisting}
-mov ESP,EBP
-pop EBP ;restore old EBP/RBP
-ret ;pop EIP/RIP
-
-\end{lstlisting}
-\end{columns}
-\end{block}
-
 
 \end{frame}

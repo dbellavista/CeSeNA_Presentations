@@ -88,13 +88,16 @@
 
 \subsection{Heap-based Overflow}
 \begin{frame}[fragile,allowframebreaks]{Heap-based Overflow}
-	Heap-based overflow is a type of buffer overflow that occurs in the heap data area. Memory on the heap is dynamically allocated by the application at run-time and typically contains program data.\\
+Buffer overflow in heap area.\\
 \begin{columns}[T]
 	\begin{column}{.47\textwidth}
 %	\begin{block}{A quick look}
 		%Heap overflows are exploitable in a different manner to that of stack-based overflows.\\
-		Exploitation is performed by corrupting this data in specific ways to cause the application to overwrite internal structures such as linked list pointers.\\
-		The canonical heap overflow technique overwrites dynamic memory allocation linkage (such as malloc meta data) and uses the resulting pointer exchange to overwrite a program function pointer.
+\begin{itemize}
+\item By corrupting \emph{malloc-ed} chunks is possible to \underline{overwrite internal structures} \underline{such as linked list pointers}.\\
+\item Canonical heap overflow overwrites dynamic memory allocation linkage (malloc meta data)
+\item Uses the resulting pointer exchange to overwrite a program function pointer (maybe in stack).
+\end{itemize}
 %	\end{block}
 	\end{column}
 	\begin{column}{.5\textwidth}
@@ -106,13 +109,60 @@
 
 \subsection{Stack-based Overflow}
 \begin{frame}[fragile,allowframebreaks]{Stack-based Overflow}
-	Stack-based buffer overflows manipulate the program to their advantage in one of several ways:
-	\begin{itemize}
-		\item By overwriting a local variable that is near the buffer in memory on the stack to change the behaviour of the program which may benefit the attacker.
-		\item By overwriting a function pointer, or exception handler, which is subsequently executed.
-		\item By overwriting the return address in a stack frame. Once the function returns, execution will resume at the return address as specified by the attacker, usually a user input filled buffer.
+Buffer overflow on stack, like the Morris one..\\
+we can:
+\begin{itemize}
+\item Overwrite local variables that are near a buffer in memory.
+\item Overwrite the some function pointer, or exception handlers pointers which are subsequently executed.
+\item Overwrite the \underline{return address in the stack frame}.\\ Once the function returns, execution will resume at the return address as specified by the attacker, usually a user input filled buffer.
 	\end{itemize}
+
 \framebreak
+
+\begin{block}{BOF in theory: Recipe}
+\begin{columns}[T]
+	\begin{column}{.3\textwidth}
+	\begin{itemize}
+	\item Buffer on stack
+	\item Not sufficiently input validation
+	\item Goodwill
+	\end{itemize}
+    \end{column}
+	\begin{column}{.7\textwidth}
+	\begin{figure}
+    \includegraphics[width=0.6\textwidth]{imgs/bof1.png}
+    \label{fig:bof1}
+    \caption{Stack frame before BOF}
+    \end{figure}	
+	\end{column}
+\end{columns}	
+\end{block}
+
+\framebreak
+
+\begin{block}{BOF in theory: Powning}
+\begin{columns}[T]
+	\begin{column}{.3\textwidth}
+	\begin{itemize}
+	\item The buffer is filled with a 
+		  {\bf shellcode} and some padding
+	\item Padding must be precise
+	\item Return address is overwritten with 
+	      the shellcode address (on stack)
+	\end{itemize}
+    \end{column}
+	\begin{column}{.7\textwidth}
+	\begin{figure}
+    \includegraphics[width=0.6\textwidth]{imgs/bof2.png}
+    \label{fig:bof2}
+    \caption{Corrupted stack frame}
+    \end{figure}	
+	\end{column}
+\end{columns}	
+\end{block}
+
+\framebreak
+
 \begin{columns}[T]
 	\begin{column}{.5\textwidth}
 	\tiny\begin{block}{./note "This is my sixth note"}

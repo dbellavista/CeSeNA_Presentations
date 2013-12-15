@@ -1,4 +1,37 @@
 \section{Exercise}
+
+
+\begin{frame}[fragile,allowframebreaks]{Tools}
+
+\begin{block}{objdump - the linux disassembler}
+		\begin{verbatim}
+$ objdump -M intel -d <PROGNAME>
+		\end{verbatim}
+\end{block}
+\framebreak		
+\begin{block}{gdb - the linux debugger}
+	\footnotesize
+	\begin{verbatim}
+$ gdb <PROGNAME>
+(gdb) set disassembly-flavor intel   # we like intel sintax
+(gdb) disassemble <SYMBOL-OR-ADDRESS>   # eg. disass main
+(gdb) b * 0xdeadbeef			# breakpoint at address
+(gdb) run <ARGS>	    # run the program
+(gdb) stepi         # step into
+(gdb) nexti         # step over
+(gdb) finish	        # run until ret
+(gdb) i r           # info registers
+(gdb) i b           # info breakpoints
+(gdb) x/20i	$eip	    # print 20 instr starting from EIP
+(gdb) x/20w	$esp	    # 'w' WORD, 's' STRING, 'd' 
+                       DECIMAL, 'b' BYTE
+(gdb) display/<X-EXPR>	# like x/ but launched 
+                           at every command
+	\end{verbatim}
+	\normalsize
+\end{block}
+\end{frame}
+
 \begin{frame}[fragile,allowframebreaks]{Exercise}
 	Exercises source available at \url{http://goo.gl/WupDs}\\
 	Some exercises need to connect via ssh to cesena.ing2.unibo.it\\
@@ -10,7 +43,6 @@
 		\caption{Exercises source}
 		\label{fig:qrcode}
 	\end{figure}
-
 \framebreak
 	\begin{block}{Warming up}
 		\emph{auth}\\
