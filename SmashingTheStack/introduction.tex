@@ -254,17 +254,22 @@ Calling convention:
 \begin{lstlisting}
 ;params passing*
 call fun   ;push EIP
-push EBP
-mov EBP, ESP
-sub ESP,<param-space>
 \end{lstlisting}
     \column{.4\textwidth}
      \acode
      \tiny
 \begin{lstlisting}
-mov ESP, EBP
-pop EBP ;restore EBP
-ret         ;pop EIP
+fun:
+  ; prologue
+  push EBP
+  mov EBP, ESP
+  sub ESP,<paramspace>
+  ...
+  ...
+  ; epilogue
+  mov ESP, EBP
+  pop EBP ;restore EBP
+  ret         ;pop EIP
 \end{lstlisting}
 \end{columns}
 \end{block}
