@@ -1,0 +1,41 @@
+\DeclareOptionBeamer{compress}{\beamer@compresstrue}
+\ProcessOptionsBeamer
+
+\mode<presentation>
+
+\definecolor{beamer@firebrick}{rgb}{0.698, 0.133, 0.133}
+\colorlet{redshaded}{red!70!white}
+\colorlet{redshaded2}{red!80!white}
+\colorlet{whiteshaded}{white!20!black}
+\colorlet{shadedshaded}{blue!4!bg} %white}
+\colorlet{blackshaded}{black!80!white}
+
+\useinnertheme{circles}
+\usecolortheme{whale}
+\usecolortheme{orchid}
+\useoutertheme{infolines}
+
+\setbeamercolor{structure}{fg=black}
+\setbeamercolor{titlelike}{parent=structure}
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamercolor{section in head/foot}{bg=black}
+\setbeamercolor{subsection in head/foot}{bg=blackshaded}
+\setbeamercolor{author in head/foot}{bg=whiteshaded}
+\setbeamercolor{date in head/foot}{fg=shadedshaded}
+
+\setbeamercolor{title}{fg=beamer@firebrick!40!red}
+\setbeamerfont{title}{series=\bfseries,parent=structure}
+
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamercolor{frametitle}{fg=redshaded2!70!white, bg=blackshaded }
+\setbeamercolor{framesubtitle}{fg=white!90}
+
+\setbeamercolor{item}{fg=beamer@firebrick}
+\setbeamertemplate{itemize items}[triangle]
+\setbeamertemplate{enumerate items}[triangle]
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+\setbeamercolor{block title}{fg=white,bg=whiteshaded}
+\setbeamercolor{block body}{fg=black, bg=shadedshaded}
+
