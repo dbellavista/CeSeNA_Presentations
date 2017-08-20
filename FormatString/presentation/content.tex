@@ -1,4 +1,57 @@
 \section{Format String}
-\begin{frame}{Format String}
-	
+
+\section{Format String}
+\begin{frame}[fragile]{Format String: What is it?}
+	\ccode
+	\begin{lstlisting}
+		int main(int argc, char** argv, char** envp) {
+			printf("Argc: %d, Argv[0]: %s, Envp: %p", argc, argv[0], envp);
+		  return 0;
+		}
+		// Printf declaration:
+		int printf ( const char * format, ... );
+
+		// Printf implementation:
+		int __printf (const char *format, ...) {
+			va_list arg; int done;
+		
+			va_start (arg, format);
+			done = vfprintf (stdout, format, arg);
+			va_end (arg);
+		
+			return done;
+		}
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Format String: Vulnerable Code}
+	\ccode
+	\begin{lstlisting}
+		int main(int argc, char** argv, char** envp) {
+		  printf(argv[1]);
+		  return 0;
+		}
+	\end{lstlisting}
+
+	\begin{lstlisting}
+		> ./format HelloWorld%x%x
+		HelloWorldxc467d1c8
+	\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{Format String: Reading}
+	\begin{block}{Reading data onto the stack}
+		\begin{lstlisting}
+		> ./format 0x%08x_0x%08x_0x%08x
+		0xff0af3c8_0xff0af3e0_0x004004fc
+		\end{lstlisting}
+	\end{block}
+
+	\begin{block}{Reading arbitrary data}
+		\begin{lstlisting}
+		> ./format \x28\x05\x40\x00%08x%08x%08x%08x%08x%08x
+		0xff0af3c8_0xff0af3e0_0x004004fc
+		\end{lstlisting}
+	\end{block}
 \end{frame}

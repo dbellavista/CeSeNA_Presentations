@@ -1,0 +1,55 @@
+\DeclareOptionBeamer{compress}{\beamer@compresstrue}
+\ProcessOptionsBeamer
+
+\mode<presentation>
+
+\useoutertheme{infolines}
+\useinnertheme{circles}
+\usecolortheme{whale}
+\usecolortheme{orchid}
+
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+
+  \begin{beamercolorbox}[wd=.3333\paperwidth,ht=3.65ex,dp=1.5ex,left]{author in head/foot}%
+  \fontsize{7}{12}\selectfont
+    \hspace*{2ex}\usebeamerfont{author in head/foot}\insertshortauthor\expandafter\beamer@ifempty\expandafter{\beamer@shortinstitute}{}{~~[\insertshortinstitute]}
+  \end{beamercolorbox}%
+
+  \begin{beamercolorbox}[wd=.3333\paperwidth,ht=3.65ex,dp=1.5ex,center]{title in head/foot}%
+  \fontsize{7}{12}\selectfont
+    \usebeamerfont{title in head/foot}\insertshorttitle
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.3333\paperwidth,ht=3.65ex,dp=1.5ex,right]{section in head/foot}%
+  \fontsize{7}{12}\selectfont
+    \usebeamerfont{section in head/foot}\insertsectionhead\hspace*{2ex}
+    \usebeamerfont{subsection in head/foot}\hspace*{2ex}\insertsubsectionhead
+  \end{beamercolorbox}%
+  }%
+  \vskip0pt%
+}
+\setbeamertemplate{headline}{%
+  \vspace{4ex}
+}
+
+\definecolor{myblue}{RGB}{240,243,249}
+\definecolor{myblue2}{HTML}{4e69b8}
+\definecolor{mygrey}{HTML}{4c4c4c}
+\definecolor{beamer@firebrick}{HTML}{4e69b8}
+
+\setbeamercolor{block body}{bg=myblue}
+\setbeamercolor{footline}{fg=myblue,bg=mygrey}
+
+\setbeamercolor{structure}{fg=mygrey}
+\setbeamercolor{titlelike}{parent=structure}
+\setbeamercolor{frametitle}{fg=myblue2}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamercolor{title}{fg=myblue2}
+\setbeamercolor{item}{fg=beamer@firebrick}
+\setbeamertemplate{itemize items}[triangle]
+\setbeamertemplate{enumerate items}[triangle]
+
+\mode
+<all>

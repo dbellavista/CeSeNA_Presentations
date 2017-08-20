@@ -1,0 +1,225 @@
+\documentclass{beamer}
+%\usetheme{Madrid}
+%\usetheme{Boadilla}
+%\usetheme{default}
+%\usetheme{Warsaw}
+%\usetheme{Frankfurt}
+\usetheme{Bologna}
+%\usetheme{Bergen}
+%\usetheme{Hannover}
+%\usecolortheme{dolphin}
+%\usetheme{Darmstadt}
+%\setbeamertemplate{footline}[page number]
+\setbeamercovered{transparent}
+\setbeamercovered{invisible}
+\setbeamertemplate{navigation symbols}{}
+% To remove the navigation symbols from
+% the bottom of slides
+
+\usepackage[outline]{contour}
+\usepackage{pgf}
+\usepackage{graphicx}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usepackage{url}
+\usepackage{multicol}
+
+%\usepackage[pdftex,bookmarks,colorlinks,%
+%pdfauthor={Daniele Bellavista},%
+%pdftitle={Shellcoding, and introduction},%
+%pdftex]{hyperref}
+%\usepackage{bm}  % For typesetting bold math (not \mathbold)
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\newcommand{\ccode}{
+	\lstset{ language=C, basicstyle=\footnotesize, numbers=none, numberstyle=\tiny\color{gray},backgroundcolor=\color{white},frame=single, captionpos=b, breaklines=true,title=\lstname, keywordstyle=\color{blue},commentstyle=\color{dkgreen}, showstringspaces=false, stringstyle=\color{mauve}, escapeinside={\%*}{*} }}
+
+\newcommand{\acode}{
+	\lstset{ language={[x86masm]Assembler}, basicstyle=\small, numbers=left, numberstyle=\tiny\color{gray},backgroundcolor=\color{white},frame=single, captionpos=b, breaklines=true,title=\lstname, keywordstyle=\color{blue},commentstyle=\color{dkgreen}, stringstyle=\color{mauve}, escapeinside={\%*}{*} }}
+
+\newcommand{\acodenonu}{
+	\lstset{ language={[x86masm]Assembler}, basicstyle=\small, numbers=none, backgroundcolor=\color{white},frame=single, captionpos=b, breaklines=true,title=\lstname, keywordstyle=\color{blue},commentstyle=\color{dkgreen}, stringstyle=\color{mauve}, escapeinside={\%*}{*} }}
+
+\newcommand{\acodesmall}{
+	\lstset{ language={[x86masm]Assembler}, basicstyle=\tiny, numbers=none, backgroundcolor=\color{white},frame=single, captionpos=b, breaklines=true,title=\lstname, keywordstyle=\color{blue},commentstyle=\color{dkgreen}, stringstyle=\color{mauve}, escapeinside={\%*}{*} }}
+
+\title[Code and Data Injection]{Unexpected inputs: the danger of data and code injection}
+
+\author[Daniele Bellavista]{Cesena Security Network and Applications}
+
+\institute[CeSeNA]
+{%
+\emph{University of Bologna, Scuola di Ingegneria ed Architettura}\\
+\emph{Ingegneria Informatica}
+\emph{Scienze e Tecnologie dell'Informazione}
+\emph{Ingegneria e Scienze Informatiche}
+}
+
+\logo{\pgfputat{\pgfxy(-1.5,7.8)}{\pgfbox[center,base]{%
+  \includegraphics[width=2.8cm]{./imgs/Cesena3.png}}}
+}
+
+\contourlength{1pt}
+\contournumber{20}
+\begin{document}
+
+% CeSeNA, speakers presentation
+{%
+  \definecolor{myblue}{HTML}{B8C3E2}
+	\setbeamertemplate{footline}{}
+	\setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{title page}{%
+  \begin{picture}(0,0)
+    \put(-11,-157){%
+      \includegraphics[height=\paperheight]{imgs/background2.jpg}
+    }
+    \put(110,-10){%
+      \includegraphics[height=1cm]{./imgs/Cesena2.png}
+    }
+    \put(25,-150){%
+      \begin{minipage}[b][45mm][t]{100mm}
+        \center
+        \usebeamerfont{title}{\fontsize{0.8cm}{1em}\selectfont \textcolor{myblue}{%
+          \contour{black}{Unexpected inputs:}
+          \contour{black}{the danger of data and code injection}
+        }\par}
+      \end{minipage}
+    }
+  \end{picture}
+
+  }
+	\begin{frame}
+	  \titlepage
+	\end{frame}
+}
+\input{presentation.tex}
+
+% CeSeNA, speakers presentation
+{%
+  \definecolor{myblue}{HTML}{B8C3E2}
+	\setbeamertemplate{footline}{}
+	\setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{title page}{%
+  \begin{picture}(0,0)
+    \put(-11,-157){%
+      \includegraphics[height=\paperheight]{imgs/background3.jpg}
+    }
+    \put(110,-10){%
+      \includegraphics[height=1cm]{./imgs/Cesena2.png}
+    }
+    \put(25,-150){%
+      \begin{minipage}[b][45mm][t]{100mm}
+        \center
+        \usebeamerfont{title}{\fontsize{0.8cm}{1em}\selectfont \textcolor{myblue}{%
+          \contour{black}{INJECTION VULNERABILITY}
+          %\contour{black}{the danger of data and code injection}
+        }\par}
+      \end{minipage}
+    }
+  \end{picture}
+
+  }
+	\begin{frame}
+	  \titlepage
+	\end{frame}
+}
+\input{injection.tex}
+
+% Exploitation
+{%
+  \definecolor{myblue}{HTML}{B8C3E2}
+	\setbeamertemplate{footline}{}
+	\setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{title page}{%
+  \begin{picture}(0,0)
+    \put(-61,-157){%
+      \includegraphics[height=\paperheight]{imgs/background4.jpg}
+    }
+    \put(110,-10){%
+      \includegraphics[height=1cm]{./imgs/Cesena2.png}
+    }
+    \put(25,-150){%
+      \begin{minipage}[b][45mm][t]{100mm}
+        \center
+        \usebeamerfont{title}{\fontsize{0.8cm}{1em}\selectfont \textcolor{myblue}{%
+          \contour{black}{EXPLOITATION}
+          %\contour{black}{the danger of data and code injection}
+        }\par}
+      \end{minipage}
+    }
+  \end{picture}
+
+  }
+	\begin{frame}
+	  \titlepage
+	\end{frame}
+}
+\input{exploitation.tex}
+
+% Excercise
+{%
+  \definecolor{myblue}{HTML}{B8C3E2}
+	\setbeamertemplate{footline}{}
+	\setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{title page}{%
+  \begin{picture}(0,0)
+    \put(-61,-157){%
+      \includegraphics[height=\paperheight]{imgs/background5.jpg}
+    }
+    \put(110,-10){%
+      \includegraphics[height=1cm]{./imgs/Cesena2.png}
+    }
+    \put(25,-150){%
+      \begin{minipage}[b][45mm][t]{100mm}
+        \center
+        \usebeamerfont{title}{\fontsize{0.8cm}{1em}\selectfont \textcolor{myblue}{%
+          \contour{black}{IT'S YOUR TURN}
+          %\contour{black}{the danger of data and code injection}
+        }\par}
+      \end{minipage}
+    }
+  \end{picture}
+
+  }
+	\begin{frame}
+	  \titlepage
+	\end{frame}
+}
+\input{exercise.tex}
+
+{%
+  \definecolor{myblue}{HTML}{B8C3E2}
+	\setbeamertemplate{footline}{}
+	\setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{title page}{%
+  \begin{picture}(0,0)
+    \put(-61,-157){%
+      \includegraphics[height=\paperheight]{imgs/background6.jpg}
+    }
+    \put(110,-30){%
+      \includegraphics[height=1cm]{./imgs/Cesena2.png}
+    }
+    %\put(25,-150){%
+      %\begin{minipage}[b][45mm][t]{100mm}
+        %\center
+        %\usebeamerfont{title}{\fontsize{0.8cm}{1em}\selectfont \textcolor{myblue}{%
+          %\contour{black}{IT'S YOUR TURN}
+          %%\contour{black}{the danger of data and code injection}
+        %}\par}
+      %\end{minipage}
+    %}
+  \end{picture}
+
+  }
+	\begin{frame}
+	  \titlepage
+	\end{frame}
+}
+%\input{references.tex}
+\end{document}

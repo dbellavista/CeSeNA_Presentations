@@ -1,0 +1,117 @@
+\section{Injection Vulnerability}
+
+\begin{frame}{Injection: same old story}
+
+\begin{block}{SQL injection}
+  \begin{itemize}
+    \item Introduced by sloppy \emph{(PHP)} programmers.
+    \item One of the main vulnerability in 2000s.
+    \item Still present and exploited!
+  \end{itemize}
+\end{block}
+
+\begin{block}{Shellshock vulnerability}
+  \begin{itemize}
+    \item Discovered in 2014.
+    \item Present since September 1989!
+    \item In some scenarios, it permits remote code execution.
+  \end{itemize}
+\end{block}
+\end{frame}
+
+  \lstset{basicstyle=\small, frame=single, breaklines=true, escapeinside={\%*}{*} }
+\begin{frame}[fragile]{SQLi example}
+  \begin{itemize}
+    \item \textbf{Scenario}: system containing secret stuff on the database, which can be accessed only by knowing their secret identifier.
+    \item \textbf{Objective}: obtain all the secrets!
+    \item SQL Query:
+\ccode
+\begin{lstlisting}
+exec("SELECT * FROM Secrets WHERE SecId = " + secretId)
+\end{lstlisting}
+\pause
+    \item If secretId is \textbf{1234567}
+\begin{lstlisting}
+exec("SELECT * FROM Secrets WHERE SecId = 1234567")
+\end{lstlisting}
+  \end{itemize}
+
+\end{frame}
+\begin{frame}[fragile]{SQLi example}
+
+\ccode
+\begin{itemize}
+  \item Query:
+  \begin{lstlisting}
+  exec("SELECT * FROM Secrets WHERE ID = " + secretId)
+  \end{lstlisting}
+\pause
+  \item Injection if secretId is \textbf{0 OR 1=1}:
+\begin{lstlisting}
+exec("SELECT * FROM Secrets WHERE ID = 0 OR 1=1")
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{A shellshock example}
+  \begin{itemize}
+    \item Request to a CGI page:
+  \begin{lstlisting}
+  GET /vulnerable.cgi
+  User-Agent: Mozilla Firefox
+  \end{lstlisting}
+\pause
+    \item Response:
+  \begin{lstlisting}
+  200 OK
+
+  Hi, I'm not vulnerable!
+  \end{lstlisting}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{A shellshock example}
+
+  \begin{itemize}
+    \item Request:
+  \begin{lstlisting}
+  GET /vulnerable.cgi
+  User-Agent: () { ignored; }; echo The following sentence is false
+  \end{lstlisting}
+\pause
+    \item Response:
+  \begin{lstlisting}
+  200 OK
+  The following sentence is false
+
+  Hi, I'm not vulnerable!
+  \end{lstlisting}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Data and code are confused}
+\begin{block}{Untrusted user-supplied inputs}
+  \begin{itemize}
+    \item Web form fields (yes, even hidden tags).
+    \item HTTP fields.
+    \item Shell parameters.
+  \end{itemize}
+\end{block}
+
+\begin{block}{No difference between data and code}
+  \begin{itemize}
+    \item No data type.
+    \item Semantic checks are performed only on the result.
+  \end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Sanitization}
+  \begin{itemize}
+    \item \textbf{Whitelist} allowed character. Drop or escape the rest.
+    \item \textbf{Type awareness:} parse integers, encode strings, etc..
+    \item Use \textbf{framework or library functions} considered secure.
+    \item Remember: \textbf{security isn't just a fix}.
+  \end{itemize}
+\end{frame}
